@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal.css">
+    <title>Practica</title>
+</head>
+<body>
+    <div id="modalAdd" class="modalAdd">
+        <!-- Contenido del modal -->
+        <div class="modal-contenido">
+            <!-- Botón para cerrar el modal -->
+            <span class="cerrar" onclick="cerrarModal()">&times;</span>
+            <!-- Formulario -->
+            <form id="formularioAlumno">
+                <h2>Agregar nuevo alumno</h2>
+                <div>
+                    <input type="text" id="CURP" name="CURP" required placeholder="CURP">
+                </div>
+                <div>
+                    <input type="text" id="matricula" name="matricula" required placeholder="Matrícula">
+                </div>
+                <div>
+                    <input type="text" id="paterno" name="paterno" required placeholder="Apellido paterno">
+                </div>
+                <div>
+                    <input type="text" id="materno" name="materno" placeholder="Apellido materno">
+                </div>
+                <div>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Nombre">
+                </div>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="row1">
+            <button class="btnAdd" id="abrirModal" onclick="abrirModal()">Agregar</button>
+        </div>
+        <div class="row2">
+            <table id="alumnosList">
+                <tr>
+                    <th>Id</th>
+                    <th>Matricula</th>
+                    <th>Nombre</th>
+                </tr>
+                <tbody id="DatosAlumnos">
+        
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+    
+    <script src="main.js"></script>
+    <script src="modal.js"></script>
+    <script>displayAlumnos();</script>
+</body>
+</html>
