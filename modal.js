@@ -1,18 +1,39 @@
-
-
+//--------------------------------------------------------------modal agregar--------------------
 // Función para abrir el modal
-function abrirModal() {
+function openAdd() {
     modalAdd.style.display = 'block';
 }
 
 // Función para cerrar el modal haciendo clic en la 'x'
-function cerrarModal() {
+function closeAdd() {
     modalAdd.style.display = 'none';
 }
 
-// Función para cerrar el modal haciendo clic fuera de él
-function clicFuera(event) {
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
+//--------------------------------------------------------------modal editar---------------------
+// Función para abrir el modal
+function openEdit() {
+    modalEdit.style.display = 'block';
+}
+
+// Función para cerrar el modal haciendo clic en la 'x'
+function closeEdit() {
+    modalEdit.style.display = 'none';
+}
+
+//--------------------------------------------------------------modal eliminar-----------------------
+const modalConfirm = document.getElementById('modalConfirm');
+
+window.onclick = function(event) {
+  if (event.target == modalConfirm) {
+    modalConfirm.style.display = "none";
+  }
+}
+
+const closeModalConfirm = () => {
+  modalConfirm.style.display = 'none';
+}
+
+const openModalConfirm = (id) => {
+  deleteId = id;
+  modalConfirm.style.display = 'block';
 }

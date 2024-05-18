@@ -8,56 +8,104 @@
     <title>Practica</title>
 </head>
 <body>
-    <div id="modalAdd" class="modalAdd">
+
+<!----------------------------------------------Listar alumnos tabla------------------------------------------------>
+    <div class="card">
+        <div class="row1">
+            <button class="btnAdd" id="abrirModal" onclick="openAdd()">+</button>
+        </div>
+        <div class="table-container">
+            <table id="alumnosList">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Clave</th>
+                        <th>Matricula</th>
+                        <th>Paterno</th>
+                        <th>Materno</th>
+                        <th>Nombre</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody id="datosAlumnos"></tbody>
+            </table>
+        </div>
+    </div>
+
+<!-----------------------------------------------Formulario agregar alumno----------------------------------------->
+    <div id="modalAdd" class="modal">
         <!-- Contenido del modal -->
         <div class="modal-contenido">
             <!-- Botón para cerrar el modal -->
-            <span class="cerrar" onclick="cerrarModal()">&times;</span>
+            <span class="cerrar" onclick="closeAdd()">&times;</span>
             <!-- Formulario -->
-            <form id="formularioAlumno">
-                <h2>Agregar nuevo alumno</h2>
+            <form id="addForm">
                 <div>
-                    <input type="text" id="CURP" name="CURP" required placeholder="CURP">
+                    <input type="text" id="clave" name="clave" placeholder="CURP">
                 </div>
                 <div>
-                    <input type="text" id="matricula" name="matricula" required placeholder="Matrícula">
+                    <input type="text" id="matricula" name="matricula" placeholder="Matrícula">
                 </div>
                 <div>
-                    <input type="text" id="paterno" name="paterno" required placeholder="Apellido paterno">
+                    <input type="text" id="paterno" name="paterno" placeholder="Apellido paterno">
                 </div>
                 <div>
                     <input type="text" id="materno" name="materno" placeholder="Apellido materno">
                 </div>
                 <div>
-                    <input type="text" id="nombre" name="nombre" required placeholder="Nombre">
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre">
                 </div>
-                <button type="submit">Enviar</button>
+                <button type="submit">Guardar</button>
             </form>
         </div>
     </div>
-
-    <div class="card">
-        <div class="row1">
-            <button class="btnAdd" id="abrirModal" onclick="abrirModal()">Agregar</button>
-        </div>
-        <div class="row2">
-            <table id="alumnosList">
-                <tr>
-                    <th>Id</th>
-                    <th>Matricula</th>
-                    <th>Nombre</th>
-                </tr>
-                <tbody id="DatosAlumnos">
-        
-                </tbody>
-            </table>
+<!-----------------------------------------------Formulario editar alumno----------------------------------------->
+    <div id="modalEdit" class="modal">
+        <!-- Contenido del modal -->
+        <div class="modal-contenido">
+            <!-- Botón para cerrar el modal -->
+            <span class="cerrar" onclick="closeEdit()">&times;</span>
+            <!-- Formulario -->
+            <form id="editForm">
+                <div>
+                    <input type="text" id="clave" name="clave" placeholder="CURP">
+                </div>
+                <div>
+                    <input type="text" id="matricula" name="matricula" placeholder="Matrícula">
+                </div>
+                <div>
+                    <input type="text" id="paterno" name="paterno" placeholder="Apellido paterno">
+                </div>
+                <div>
+                    <input type="text" id="materno" name="materno" placeholder="Apellido materno">
+                </div>
+                <div>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+                </div>
+                <button type="submit">Guardar</button>
+            </form>
         </div>
     </div>
-    
+<!-------------------------------------------------Modal confirmacion eliminar alumno------------------------------->
+    <div class="modal" id="modalConfirm">
+        <!-- Contenido del modal -->
+        <div class="modal-contenido">
+            <div class="form-content">
+                <div class="form-body">
+                    <h3>Eliminar</h3>
+                    <p>¿Estas seguro de eliminar el producto?</p>
+                </div>
+                <div class="form-footer">
+                    <button type="button" onclick="confirmDelete(false)">No</button>
+                    <button type="button" onclick="confirmDelete(true)">Si</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     
-    <script src="main.js"></script>
     <script src="modal.js"></script>
-    <script>displayAlumnos();</script>
+    <script src="main.js"></script>
+
 </body>
 </html>

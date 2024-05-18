@@ -1,122 +1,143 @@
-function displayAlumnos() {
-    const productList = document.getElementById('DatosAlumnos');
+//-------------------------------------------------------------------Listar alumnos --------------------------------------------------------------------------
+window.addEventListener('DOMContentLoaded', () => {
+    readAlumnos();
+  })
 
-    getAlumnos()
-    .then(alumnos => {
-        DatosAlumnos.innerHTML = '';
-        const claves = ['id', 'matricula', 'nombre_completo'];
+function readAlumnos() {
+    fetch('http://webservices.mx/escolares/test/alumnos/listar')
+    .then(resp => resp.json())
+    .then(data => {
+        console.log(data.meta);
+        alumnos = data.response;
+        renderResult(alumnos);
 
-        alumnos.response.forEach(alumno => {
-            const row = document.createElement('tr');
-            
-            for (const key in alumno){
-                const col = document.createElement
-                if (claves.includes(key)) {
-                    // Obtenemos el valor actual
-                    const valorActual = alumno[key];
-    
-                    // Creamos una celda de tabla y agregamos el contenido
-                    const col = document.createElement('td');
-                    col.textContent = valorActual;
-                    
-                    // Agregamos la celda a la fila
-                    row.appendChild(col);
-                }
-            }
-
-            DatosAlumnos.appendChild(row);
-        });
-    });
-}
-
-// Función para obtener todos los productos
-function getAlumnos() {
-    return fetch("http://webservices.mx/escolares/test/alumnos/listar")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('La conexion no fue exitosa');
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error('Hubo un problema al obtener los productos:', error);
-        });
-}
-
-// Función para crear un nuevo producto
-function createAlumno(datos) {
-    return fetch("http://webservices.mx/escolares/test/alumnos", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(datos),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('La conexion no fue exitosa');
-        }
-        return response.json();
+    .catch(error => console.error(error));
+}
+
+const renderResult = (alumnos) => {
+    let listHTML = "";
+    alumnos.forEach(alumno => {
+        listHTML += `
+            <tr>
+                <td>${alumno.id}</td>
+                <td>${alumno.clave}</td>
+                <td>${alumno.matricula}</td>
+                <td>${alumno.paterno}</td>
+                <td>${alumno.materno}</td>
+                <td>${alumno.nombre}</td>
+                <td class="opciones">
+                    <button class="btnOpcion" type="button" onclick="editarAlumno('${alumno.id}')">Editar</button>
+                    <button class="btnOpcion" type="button" onclick="openModalConfirm(${alumno.id})">Eliminar</button>
+                </td>
+            </tr>
+        `;
+    });
+    document.querySelector('#datosAlumnos').innerHTML = listHTML;
+  }
+
+  //-------------------------------------------------------------------Agregar Alumno----------------------------------------------------------------------
+  function createAlumno(datosAlumno) {
+    fetch('http://webservices.mx/escolares/test/alumnos/agregar', {
+      method: 'POST',
+      body: JSON.stringify(datosAlumno)
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      console.log(data);
+      document.querySelector('#addForm').reset();
+      readAlumnos();
+      closeAdd();
+    })
+    .catch(error => console.error(error));
+  };
+  
+  const form = document.getElementById('addForm');
+  
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+  
+    const alumno = {
+      clave: document.getElementById('clave').value,
+      matricula: document.getElementById('matricula').value,
+      paterno: document.getElementById('paterno').value,
+      materno: document.getElementById('materno').value,
+      nombre: document.getElementById('nombre').value
+    };
+  
+    createAlumno(alumno);
+  });
+
+//---------------------------------------------------------------------------Editar alumno --------------------------------------------------------------------
+function editarAlumno(id) {
+    let alumno = alumnos.find(alumno => alumno.id === id);
+
+    if (alumno) {
+        document.querySelector("#editForm #clave").value = alumno.clave;
+        document.querySelector("#editForm #matricula").value = alumno.matricula;
+        document.querySelector("#editForm #paterno").value = alumno.paterno;
+        document.querySelector("#editForm #materno").value = alumno.materno;
+        document.querySelector("#editForm #nombre").value = alumno.nombre;
+
+        openEdit();
+    } else {
+        console.log("Alumno no encontrado");
+    }
+
+    const form = document.getElementById('editForm');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+      
+        const alumno = {
+            id: id,
+            clave: document.querySelector("#editForm #clave").value,
+            matricula: document.querySelector("#editForm #matricula").value,
+            paterno: document.querySelector("#editForm #paterno").value,
+            materno: document.querySelector("#editForm #materno").value,
+            nombre: document.querySelector("#editForm #nombre").value
+        };
+        updateAlumno(alumno);
+    });
+};
+
+function updateAlumno(alumno){
+    fetch(`http://webservices.mx/escolares/test/alumnos/guardar/${alumno.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(alumno),
+    })
+    .then(resp => resp.json())
+    .then(data => {
+        console.log(data);
+        readAlumnos();
+    })
+    .catch(error => console.error(error));
+};
+
+//----------------------------------------------------------------Eliminar Alumno --------------------------------------------
+let deleteId = null;
+
+const deleteAlumno = (id) => {
+
+    fetch(`http://webservices.mx/escolares/test/alumnos/eliminar/${id}`, {
+      method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(datos => {
+        console.log(datos);
+        readAlumnos();
+        closeModalConfirm();
+        deleteId = null;
     })
     .catch(error => {
-        console.error('Hubo un problema al crear el alumno:', error);
-    });
-}
-
-document.getElementById('formularioAlumno').addEventListener('submit', function(event) {
-    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
-
-    // Obtener los datos del formulario
-    const formData = new FormData(event.target);
-    const datosAlumno = {};
-    formData.forEach((value, key) => {
-        datosAlumno[key] = value;
-    });
-
-    // Llamar a la función createAlumno para enviar los datos a la API REST
-    createAlumno(datosAlumno)
-    .then(response => {
-        // Hacer algo con la respuesta del servidor, si es necesario
-        alert('Alumno creado exitosamente');
+        console.error(error);
     })
-    .catch(error => {
-        // Manejar el error, si ocurre
-        alert('Hubo un problema al crear el alumno. Por favor, inténtalo de nuevo más tarde.');
-    });
-});
-
-// Función para actualizar un producto existente
-function updateAlumno(alumnoId, datos) {
-    return fetch(`${"http://webservices.mx/escolares/test/alumnos/guardar"}/${alumnoId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(datos),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('La conexion no fue exitosa');
-        }
-        return response.json();
-    })
-    .catch(error => {
-        console.error('Hubo un problema al actualizar el alumno:', error);
-    });
-}
-
-// Función para eliminar un producto
-function deleteAlumno(alumnoId) {
-    return fetch(`${"http://webservices.mx/escolares/test/alumnos/eliminar"}/${alumnoId}`, {
-        method: 'DELETE',
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('La conexion no fue exitosa');
-        }
-        return response.json();
-    })
-    .catch(error => {
-        console.error('Hubo un problema al eliminar el producto:', error);
-    });
-}
+  }
+  
+  const confirmDelete = (res) => {
+    if(res){
+      deleteAlumno(deleteId);
+    } else {
+      closeModalConfirm();
+    }
+  }
